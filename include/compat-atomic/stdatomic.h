@@ -109,8 +109,6 @@ typedef struct atomic_flag { atomic_bool _Value; } atomic_flag;
  * atomic_exchange
  */
 
-static inline void *  __msvc_xchg_ptr (void * volatile * addr, void * val)
-{ return _InterlockedExchangePointer(addr, val); }
 static inline __int8  __msvc_xchg_i8 (__int8 volatile  * addr, __int8 val)
 { return _InterlockedExchange8(addr, val); }
 static inline __int16 __msvc_xchg_i16(__int16 volatile * addr, __int16 val)
@@ -120,8 +118,6 @@ static inline __int32 __msvc_xchg_i32(__int32 volatile * addr, __int32 val)
 static inline __int64 __msvc_xchg_i64(__int64 volatile * addr, __int64 val)
 { return _InterlockedExchange64(addr, val); }
 
-static inline ptrdiff_t __c11_atomic_exchange__atomic_ptrdiff_t(atomic_ptrdiff_t *obj, ptrdiff_t desired)
-{ return (ptrdiff_t)__msvc_xchg_ptr((void* volatile *)obj, (void*)desired); }
 static inline char __c11_atomic_exchange__atomic_char(atomic_char *obj, char desired)
 { return (char)__msvc_xchg_i8((__int8 volatile *)obj, (__int8)desired); }
 static inline short __c11_atomic_exchange__atomic_short(atomic_short *obj, short desired)
@@ -154,8 +150,7 @@ atomic_uint*: __c11_atomic_exchange__atomic_uint,         \
 atomic_long*: __c11_atomic_exchange__atomic_long,         \
 atomic_ulong*: __c11_atomic_exchange__atomic_ulong,       \
 atomic_llong*: __c11_atomic_exchange__atomic_llong,       \
-atomic_ullong*: __c11_atomic_exchange__atomic_ullong,     \
-atomic_ptrdiff_t: __c11_atomic_exchange__atomic_ptrdiff_t \
+atomic_ullong*: __c11_atomic_exchange__atomic_ullong      \
 )(obj,desired)
 
 #define atomic_exchange(obj,desired) __c11_atomic_exchange(obj,desired)
@@ -167,8 +162,6 @@ atomic_ptrdiff_t: __c11_atomic_exchange__atomic_ptrdiff_t \
  * atomic_compare_exchange
  */
 
-static inline void * __msvc_cmpxchg_ptr(void * volatile * addr, void * oldval, void * newval)
-{ return _InterlockedCompareExchangePointer((void * volatile *)addr, newval, oldval); }
 static inline __int8  __msvc_cmpxchg_i8 (__int8 volatile  * addr, __int8 oldval, __int8 newval)
 { return _InterlockedCompareExchange8((__int8 volatile *)addr, newval, oldval); }
 static inline __int16 __msvc_cmpxchg_i16(__int16 volatile  * addr, __int16 oldval, __int16 newval)
@@ -178,8 +171,6 @@ static inline __int32 __msvc_cmpxchg_i32(__int32 volatile  * addr, __int32 oldva
 static inline __int64 __msvc_cmpxchg_i64(__int64 volatile  * addr, __int64 oldval, __int64 newval)
 { return _InterlockedCompareExchange64((__int64 volatile *)addr, newval, oldval); }
 
-static inline _Bool __c11_atomic_compare_exchange_strong__atomic_ptrdiff_t(atomic_ptrdiff_t *obj, ptrdiff_t* expected, ptrdiff_t desired)
-{ ptrdiff_t cmp = *expected, val = (ptrdiff_t)__msvc_cmpxchg_ptr((void* volatile *)obj, (void*)cmp, (void*)desired); return val == cmp; }
 static inline _Bool __c11_atomic_compare_exchange_strong__atomic_char(atomic_char *obj, char* expected, char desired)
 { char cmp = *expected, val = __msvc_cmpxchg_i8((__int8 volatile *)obj, (__int8)cmp, (__int8)desired); return val == cmp; }
 static inline _Bool __c11_atomic_compare_exchange_strong__atomic_short(atomic_short *obj, short* expected, short desired)
@@ -212,8 +203,7 @@ atomic_uint*: __c11_atomic_compare_exchange_strong__atomic_uint,         \
 atomic_long*: __c11_atomic_compare_exchange_strong__atomic_long,         \
 atomic_ulong*: __c11_atomic_compare_exchange_strong__atomic_ulong,       \
 atomic_llong*: __c11_atomic_compare_exchange_strong__atomic_llong,       \
-atomic_ullong*: __c11_atomic_compare_exchange_strong__atomic_ullong,     \
-atomic_ptrdiff_t: __c11_atomic_compare_exchange_strong__atomic_ptrdiff_t \
+atomic_ullong*: __c11_atomic_compare_exchange_strong__atomic_ullong      \
 )(obj,expected,desired)
 
 #define atomic_compare_exchange_weak(obj,expected,desired) __c11_atomic_compare_exchange_strong(obj,expected,desired)
