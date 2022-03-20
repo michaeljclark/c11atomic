@@ -128,6 +128,8 @@ short __c11_atomic_exchange__atomic_short(atomic_short *obj, short desired)
 { return (short)__msvc_xchg_i16((__int16 volatile *)obj, (__int16)desired); }
 int __c11_atomic_exchange__atomic_int(atomic_int *obj, int desired)
 { return (int)__msvc_xchg_i32((__int32 volatile *)obj, (__int32)desired); }
+long __c11_atomic_exchange__atomic_long(atomic_long *obj, long desired)
+{ return (int)__msvc_xchg_i32((__int32 volatile *)obj, (__int32)desired); }
 llong __c11_atomic_exchange__atomic_llong(atomic_llong *obj, llong desired)
 { return (llong)__msvc_xchg_i64((__int64 volatile *)obj, (__int64)desired); }
 uchar __c11_atomic_exchange__atomic_uchar(atomic_uchar *obj, uchar desired)
@@ -135,6 +137,8 @@ uchar __c11_atomic_exchange__atomic_uchar(atomic_uchar *obj, uchar desired)
 ushort __c11_atomic_exchange__atomic_ushort(atomic_ushort *obj, ushort desired)
 { return (short)__msvc_xchg_i16((__int16 volatile *)obj, (__int16)desired); }
 uint __c11_atomic_exchange__atomic_uint(atomic_uint *obj, uint desired)
+{ return (int)__msvc_xchg_i32((__int32 volatile *)obj, (__int32)desired); }
+ulong __c11_atomic_exchange__atomic_ulong(atomic_ulong *obj, ulong desired)
 { return (int)__msvc_xchg_i32((__int32 volatile *)obj, (__int32)desired); }
 ullong __c11_atomic_exchange__atomic_ullong(atomic_ullong *obj, ullong desired)
 { return (llong)__msvc_xchg_i64((__int64 volatile *)obj, (__int64)desired); }
@@ -147,6 +151,8 @@ atomic_short*: __c11_atomic_exchange__atomic_short,       \
 atomic_ushort*: __c11_atomic_exchange__atomic_ushort,     \
 atomic_int*: __c11_atomic_exchange__atomic_int,           \
 atomic_uint*: __c11_atomic_exchange__atomic_uint,         \
+atomic_long*: __c11_atomic_exchange__atomic_long,         \
+atomic_ulong*: __c11_atomic_exchange__atomic_ulong,       \
 atomic_llong*: __c11_atomic_exchange__atomic_llong,       \
 atomic_ullong*: __c11_atomic_exchange__atomic_ullong,     \
 atomic_ptrdiff_t: __c11_atomic_exchange__atomic_ptrdiff_t \
@@ -180,6 +186,8 @@ _Bool __c11_atomic_compare_exchange_strong__atomic_short(atomic_short *obj, shor
 { short cmp = *expected, val = __msvc_cmpxchg_i16((__int16 volatile *)obj, (__int16)cmp, (__int16)desired); return val == cmp; }
 _Bool __c11_atomic_compare_exchange_strong__atomic_int(atomic_int *obj, int* expected, int desired)
 { int cmp = *expected, val = __msvc_cmpxchg_i32((__int32 volatile *)obj, (__int32)cmp, (__int32)desired); return val == cmp; }
+_Bool __c11_atomic_compare_exchange_strong__atomic_long(atomic_long *obj, long* expected, long desired)
+{ long cmp = *expected, val = __msvc_cmpxchg_i32((__int32 volatile *)obj, (__int32)cmp, (__int32)desired); return val == cmp; }
 _Bool __c11_atomic_compare_exchange_strong__atomic_llong(atomic_llong *obj, llong* expected, llong desired)
 { llong cmp = *expected, val = __msvc_cmpxchg_i64((__int64 volatile *)obj, (__int64)cmp, (__int64)desired); return val == cmp; }
 _Bool __c11_atomic_compare_exchange_strong__atomic_uchar(atomic_uchar *obj, uchar* expected, uchar desired)
@@ -188,6 +196,8 @@ _Bool __c11_atomic_compare_exchange_strong__atomic_ushort(atomic_ushort *obj, us
 { ushort cmp = *expected, val = __msvc_cmpxchg_i16((__int16 volatile *)obj, (__int16)cmp, (__int16)desired); return val == cmp; }
 _Bool __c11_atomic_compare_exchange_strong__atomic_uint(atomic_uint *obj, uint* expected, uint desired)
 { uint cmp = *expected, val = __msvc_cmpxchg_i32((__int32 volatile *)obj, (__int32)cmp, (__int32)desired); return val == cmp; }
+_Bool __c11_atomic_compare_exchange_strong__atomic_ulong(atomic_ulong *obj, ulong* expected, ulong desired)
+{ ulong cmp = *expected, val = __msvc_cmpxchg_i32((__int32 volatile *)obj, (__int32)cmp, (__int32)desired); return val == cmp; }
 _Bool __c11_atomic_compare_exchange_strong__atomic_ullong(atomic_ullong *obj, ullong* expected, ullong desired)
 { ullong cmp = *expected, val = __msvc_cmpxchg_i64((__int64 volatile *)obj, (__int64)cmp, (__int64)desired); return val == cmp; }
 
@@ -199,6 +209,8 @@ atomic_short*: __c11_atomic_compare_exchange_strong__atomic_short,       \
 atomic_ushort*: __c11_atomic_compare_exchange_strong__atomic_ushort,     \
 atomic_int*: __c11_atomic_compare_exchange_strong__atomic_int,           \
 atomic_uint*: __c11_atomic_compare_exchange_strong__atomic_uint,         \
+atomic_long*: __c11_atomic_compare_exchange_strong__atomic_long,         \
+atomic_ulong*: __c11_atomic_compare_exchange_strong__atomic_ulong,       \
 atomic_llong*: __c11_atomic_compare_exchange_strong__atomic_llong,       \
 atomic_ullong*: __c11_atomic_compare_exchange_strong__atomic_ullong,     \
 atomic_ptrdiff_t: __c11_atomic_compare_exchange_strong__atomic_ptrdiff_t \
@@ -228,16 +240,20 @@ short __c11_atomic_fetch_add__atomic_short(atomic_short *obj, short arg)
 { return (short)__msvc_xadd_i16((__int16 volatile *)obj, (__int16)arg); }
 int __c11_atomic_fetch_add__atomic_int(atomic_int *obj, int arg)
 { return (int)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
+long __c11_atomic_fetch_add__atomic_long(atomic_long *obj, long arg)
+{ return (long)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
 llong __c11_atomic_fetch_add__atomic_llong(atomic_llong *obj, llong arg)
 { return (llong)__msvc_xadd_i64((__int64 volatile *)obj, (__int64)arg); }
 uchar __c11_atomic_fetch_add__atomic_uchar(atomic_uchar *obj, uchar arg)
-{ return (char)__msvc_xadd_i8((__int8 volatile *)obj, (__int8)arg); }
+{ return (uchar)__msvc_xadd_i8((__int8 volatile *)obj, (__int8)arg); }
 ushort __c11_atomic_fetch_add__atomic_ushort(atomic_ushort *obj, ushort arg)
-{ return (short)__msvc_xadd_i16((__int16 volatile *)obj, (__int16)arg); }
+{ return (ushort)__msvc_xadd_i16((__int16 volatile *)obj, (__int16)arg); }
 uint __c11_atomic_fetch_add__atomic_uint(atomic_uint *obj, uint arg)
-{ return (int)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
+{ return (uint)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
+ulong __c11_atomic_fetch_add__atomic_ulong(atomic_ulong *obj, ulong arg)
+{ return (ulong)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
 ullong __c11_atomic_fetch_add__atomic_ullong(atomic_ullong *obj, ullong arg)
-{ return (llong)__msvc_xadd_i64((__int64 volatile *)obj, (__int64)arg); }
+{ return (ullong)__msvc_xadd_i64((__int64 volatile *)obj, (__int64)arg); }
 
 #define __c11_atomic_fetch_add(obj,arg)                    \
 _Generic((obj),                                            \
@@ -247,6 +263,8 @@ atomic_short*: __c11_atomic_fetch_add__atomic_short,       \
 atomic_ushort*: __c11_atomic_fetch_add__atomic_ushort,     \
 atomic_int*: __c11_atomic_fetch_add__atomic_int,           \
 atomic_uint*: __c11_atomic_fetch_add__atomic_uint,         \
+atomic_long*: __c11_atomic_fetch_add__atomic_long,         \
+atomic_ulong*: __c11_atomic_fetch_add__atomic_ulong,       \
 atomic_llong*: __c11_atomic_fetch_add__atomic_llong,       \
 atomic_ullong*: __c11_atomic_fetch_add__atomic_ullong      \
 )(obj,arg)
@@ -266,6 +284,8 @@ static inline short __c11_atomic_load__atomic_short(atomic_short *obj)
 { short val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline int __c11_atomic_load__atomic_int(atomic_int *obj)
 { int val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
+static inline long __c11_atomic_load__atomic_long(atomic_long *obj)
+{ long val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline llong __c11_atomic_load__atomic_llong(atomic_llong *obj)
 { llong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline uchar __c11_atomic_load__atomic_uchar(atomic_uchar *obj)
@@ -274,6 +294,8 @@ static inline ushort __c11_atomic_load__atomic_ushort(atomic_ushort *obj)
 { ushort val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline uint __c11_atomic_load__atomic_uint(atomic_uint *obj)
 { uint val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
+static inline ulong __c11_atomic_load__atomic_ulong(atomic_ulong *obj)
+{ ulong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline ullong __c11_atomic_load__atomic_ullong(atomic_ullong *obj)
 { ullong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 
@@ -285,6 +307,8 @@ atomic_short*: __c11_atomic_load__atomic_short,       \
 atomic_ushort*: __c11_atomic_load__atomic_ushort,     \
 atomic_int*: __c11_atomic_load__atomic_int,           \
 atomic_uint*: __c11_atomic_load__atomic_uint,         \
+atomic_long*: __c11_atomic_load__atomic_long,         \
+atomic_ulong*: __c11_atomic_load__atomic_ulong,       \
 atomic_llong*: __c11_atomic_load__atomic_llong,       \
 atomic_ullong*: __c11_atomic_load__atomic_ullong      \
 )(obj)
@@ -313,10 +337,12 @@ type __concat3(prefix,atomic_,type)(__concat2(atomic_,type) *obj, type arg) { \
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,char,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,short,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,int,&)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,long,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,llong,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,uchar,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ushort,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,uint,&)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ulong,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ullong,&)
 
 #define __c11_atomic_fetch_and(obj,arg)                    \
@@ -327,6 +353,8 @@ atomic_short*: __c11_atomic_fetch_and__atomic_short,       \
 atomic_ushort*: __c11_atomic_fetch_and__atomic_ushort,     \
 atomic_int*: __c11_atomic_fetch_and__atomic_int,           \
 atomic_uint*: __c11_atomic_fetch_and__atomic_uint,         \
+atomic_long*: __c11_atomic_fetch_and__atomic_long,         \
+atomic_ulong*: __c11_atomic_fetch_and__atomic_ulong,       \
 atomic_llong*: __c11_atomic_fetch_and__atomic_llong,       \
 atomic_ullong*: __c11_atomic_fetch_and__atomic_ullong      \
 )(obj,arg)
@@ -341,10 +369,12 @@ atomic_ullong*: __c11_atomic_fetch_and__atomic_ullong      \
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,char,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,short,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,int,|)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,long,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,llong,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,uchar,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ushort,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,uint,|)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ulong,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ullong,|)
 
 #define __c11_atomic_fetch_or(obj,arg)			   \
@@ -355,6 +385,8 @@ atomic_short*: __c11_atomic_fetch_or__atomic_short,        \
 atomic_ushort*: __c11_atomic_fetch_or__atomic_ushort,      \
 atomic_int*: __c11_atomic_fetch_or__atomic_int,            \
 atomic_uint*: __c11_atomic_fetch_or__atomic_uint,          \
+atomic_long*: __c11_atomic_fetch_or__atomic_long,          \
+atomic_ulong*: __c11_atomic_fetch_or__atomic_ulong,	   \
 atomic_llong*: __c11_atomic_fetch_or__atomic_llong,        \
 atomic_ullong*: __c11_atomic_fetch_or__atomic_ullong       \
 )(obj,arg)
@@ -369,10 +401,12 @@ atomic_ullong*: __c11_atomic_fetch_or__atomic_ullong       \
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,char,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,short,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,int,^)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,long,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,llong,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,uchar,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ushort,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,uint,^)
+__C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ulong,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ullong,^)
 
 #define __c11_atomic_fetch_xor(obj,arg)                    \
@@ -383,6 +417,8 @@ atomic_short*: __c11_atomic_fetch_xor__atomic_short,       \
 atomic_ushort*: __c11_atomic_fetch_xor__atomic_ushort,     \
 atomic_int*: __c11_atomic_fetch_xor__atomic_int,           \
 atomic_uint*: __c11_atomic_fetch_xor__atomic_uint,         \
+atomic_long*: __c11_atomic_fetch_xor__atomic_long,         \
+atomic_ulong*: __c11_atomic_fetch_xor__atomic_ulong,	   \
 atomic_llong*: __c11_atomic_fetch_xor__atomic_llong,       \
 atomic_ullong*: __c11_atomic_fetch_xor__atomic_ullong      \
 )(obj,arg)
@@ -433,10 +469,12 @@ static inline void __c11_atomic_signal_fence(mo)
 _Bool __c11_atomic_is_lock_free__atomic_char(atomic_char *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_short(atomic_short *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_int(atomic_int *obj) { return 1; }
+_Bool __c11_atomic_is_lock_free__atomic_long(atomic_long *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_llong(atomic_llong *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_uchar(atomic_uchar *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_ushort(atomic_ushort *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_uint(atomic_uint *obj) { return 1; }
+_Bool __c11_atomic_is_lock_free__atomic_ulong(atomic_ulong *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__atomic_ullong(atomic_ullong *obj) { return 1; }
 _Bool __c11_atomic_is_lock_free__unhandled(void *obj) { return 0; }
 
@@ -448,6 +486,8 @@ atomic_short*: __c11_atomic_is_lock_free__atomic_short,   \
 atomic_ushort*: __c11_atomic_is_lock_free__atomic_ushort, \
 atomic_int*: __c11_atomic_is_lock_free__atomic_int,       \
 atomic_uint*: __c11_atomic_is_lock_free__atomic_uint,     \
+atomic_long*: __c11_atomic_is_lock_free__atomic_long,     \
+atomic_ulong*: __c11_atomic_is_lock_free__atomic_ulong,   \
 atomic_llong*: __c11_atomic_is_lock_free__atomic_llong,   \
 atomic_ullong*: __c11_atomic_is_lock_free__atomic_ullong, \
 default: __c11_atomic_is_lock_free__unhandled             \
