@@ -14,6 +14,7 @@ the heeader currently supports a subset of the atomic types.
 - `atomic_char`, `atomic_uchar`
 - `atomic_short`, `atomic_ushort`
 - `atomic_int`, `atomic_uint`
+- `atomic_long`, `atomic_ulong`
 - `atomic_llong`, `atomic_ullong`
 
 the header currently uses strong ordering for all primitives
@@ -38,7 +39,8 @@ and the memory order parameter for explicit ops is ignored.
 
 ### integration tests
 
-simple compile, link and code generation tests. this is not intended to be a full test suite.
+simple compile, link and code generation tests. this is not intended
+to be a full test suite.
 
 - `test_threads` - tests <threads.h> thread creation.
 - `test_atomics` - tests <stdatomic.h> interlocked operations.
@@ -46,12 +48,17 @@ simple compile, link and code generation tests. this is not intended to be a ful
 
 ### latency tests
 
-two threads exchange counter bumps to measure inter-thread latency using the memory system.
+two threads exchange counter bumps to measure inter-thread latency
+using the memory system.
 
 - C11 &lt;threads.h> and &lt;stdatomic.h> tests:
-  - `latency_atomic_acquire_release_c` - sender and receiver loop using acquire and release memory ops
-  - `latency_atomic_relaxed_barrier_c` - sender and receiver loop using relaxed memory ops and barriers
+  - `latency_atomic_acquire_release_c` - sender and receiver
+    loop using acquire and release memory ops
+  - `latency_atomic_relaxed_barrier_c` - sender and receiver
+    loop using relaxed memory ops and barriers
 
 - C++11 &lt;threads>, &lt;atomic>, and &lt;chrono> tests:
-  - `latency_atomic_acquire_release_cxx` - sender and receiver loop using acquire and release memory ops
-  - `latency_atomic_relaxed_barrier_cxx` - sender and receiver loop using relaxed memory ops and barriers
+  - `latency_atomic_acquire_release_cxx` - sender and receiver
+    loop using acquire and release memory ops
+  - `latency_atomic_relaxed_barrier_cxx` - sender and receiver
+    loop using relaxed memory ops and barriers
