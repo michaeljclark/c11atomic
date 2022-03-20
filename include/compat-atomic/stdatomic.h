@@ -171,7 +171,7 @@ static inline void * __msvc_cmpxchg_ptr(void * volatile * addr, void * oldval, v
 { return _InterlockedCompareExchangePointer((void * volatile *)addr, newval, oldval); }
 static inline __int8  __msvc_cmpxchg_i8 (__int8 volatile  * addr, __int8 oldval, __int8 newval)
 { return _InterlockedCompareExchange8((__int8 volatile *)addr, newval, oldval); }
-static inline __int16 __msvc_cmpxchg_i16(__int16 volatile  * addr, __int16 oldval, __int32 newval)
+static inline __int16 __msvc_cmpxchg_i16(__int16 volatile  * addr, __int16 oldval, __int16 newval)
 { return _InterlockedCompareExchange16((__int16 volatile *)addr, newval, oldval); }
 static inline __int32 __msvc_cmpxchg_i32(__int32 volatile  * addr, __int32 oldval, __int32 newval)
 { return _InterlockedCompareExchange((__int32 volatile *)addr, newval, oldval); }
