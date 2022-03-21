@@ -43,6 +43,19 @@
 
 #if defined _MSC_VER && defined __STDC_NO_ATOMICS__ && __STDC_VERSION__ >= 201112L
 
+#define __concat2(x,y) x ## y
+#define __concat3(x,y,z) x ## y ## z
+
+#if UINTPTR_MAX == 0xFFFFFFFFFFFFFFFFull
+#define __intptr __int64
+#define __ptr i64
+#elif UINTPTR_MAX == 0xFFFFFFFFu
+#define __intptr __int32
+#define __ptr i32
+#else
+#error unable to determine pointer width
+#endif
+
 /*
  * constant macros and enumerations
  */
@@ -102,6 +115,7 @@ typedef _Atomic size_t atomic_size_t;
 typedef _Atomic ptrdiff_t atomic_ptrdiff_t;
 typedef _Atomic intmax_t atomic_intmax_t;
 typedef _Atomic uintmax_t atomic_uintmax_t;
+typedef void * _Atomic atomic_ptr;
 
 typedef struct atomic_flag { atomic_bool _Value; } atomic_flag;
 
@@ -117,6 +131,8 @@ static inline __int32 __msvc_xchg_i32(__int32 volatile * addr, __int32 val)
 { return _InterlockedExchange(addr, val); }
 static inline __int64 __msvc_xchg_i64(__int64 volatile * addr, __int64 val)
 { return _InterlockedExchange64(addr, val); }
+
+#define __msvc_xchg_ptr(ptr) __concat2(__msvc_xchg_,ptr)
 
 static inline char __c11_atomic_exchange__atomic_char(atomic_char *obj, char desired)
 { return (char)__msvc_xchg_i8((__int8 volatile *)obj, (__int8)desired); }
@@ -138,6 +154,8 @@ static inline ulong __c11_atomic_exchange__atomic_ulong(atomic_ulong *obj, ulong
 { return (int)__msvc_xchg_i32((__int32 volatile *)obj, (__int32)desired); }
 static inline ullong __c11_atomic_exchange__atomic_ullong(atomic_ullong *obj, ullong desired)
 { return (llong)__msvc_xchg_i64((__int64 volatile *)obj, (__int64)desired); }
+static inline void* __c11_atomic_exchange__atomic_ptr(atomic_ptr *obj, void* desired)
+{ return (void*)__msvc_xchg_ptr(__ptr)((__intptr volatile *)obj, (ptrdiff_t)desired); }
 
 #define __c11_atomic_exchange(obj,desired)                \
 _Generic((obj),                                           \
@@ -171,6 +189,8 @@ static inline __int32 __msvc_cmpxchg_i32(__int32 volatile  * addr, __int32 oldva
 static inline __int64 __msvc_cmpxchg_i64(__int64 volatile  * addr, __int64 oldval, __int64 newval)
 { return _InterlockedCompareExchange64((__int64 volatile *)addr, newval, oldval); }
 
+#define __msvc_cmpxchg_ptr(ptr) __concat2(__msvc_cmpxchg_,ptr)
+
 static inline _Bool __c11_atomic_compare_exchange_strong__atomic_char(atomic_char *obj, char* expected, char desired)
 { char cmp = *expected, val = __msvc_cmpxchg_i8((__int8 volatile *)obj, (__int8)cmp, (__int8)desired); return val == cmp; }
 static inline _Bool __c11_atomic_compare_exchange_strong__atomic_short(atomic_short *obj, short* expected, short desired)
@@ -191,6 +211,8 @@ static inline _Bool __c11_atomic_compare_exchange_strong__atomic_ulong(atomic_ul
 { ulong cmp = *expected, val = __msvc_cmpxchg_i32((__int32 volatile *)obj, (__int32)cmp, (__int32)desired); return val == cmp; }
 static inline _Bool __c11_atomic_compare_exchange_strong__atomic_ullong(atomic_ullong *obj, ullong* expected, ullong desired)
 { ullong cmp = *expected, val = __msvc_cmpxchg_i64((__int64 volatile *)obj, (__int64)cmp, (__int64)desired); return val == cmp; }
+static inline _Bool __c11_atomic_compare_exchange_strong__atomic_ptr(atomic_ptr *obj, void** expected, void* desired)
+{ ptrdiff_t cmp = *(ptrdiff_t*)expected, val = __msvc_cmpxchg_ptr(__ptr)((__intptr volatile *)obj, (ptrdiff_t)cmp, (ptrdiff_t)desired); return (ptrdiff_t)val == cmp; }
 
 #define __c11_atomic_compare_exchange_strong(obj,expected,desired)       \
 _Generic((obj),                                                          \
@@ -203,7 +225,8 @@ atomic_uint*: __c11_atomic_compare_exchange_strong__atomic_uint,         \
 atomic_long*: __c11_atomic_compare_exchange_strong__atomic_long,         \
 atomic_ulong*: __c11_atomic_compare_exchange_strong__atomic_ulong,       \
 atomic_llong*: __c11_atomic_compare_exchange_strong__atomic_llong,       \
-atomic_ullong*: __c11_atomic_compare_exchange_strong__atomic_ullong      \
+atomic_ullong*: __c11_atomic_compare_exchange_strong__atomic_ullong,     \
+atomic_ptr*: __c11_atomic_compare_exchange_strong__atomic_ptr            \
 )(obj,expected,desired)
 
 #define atomic_compare_exchange_weak(obj,expected,desired) __c11_atomic_compare_exchange_strong(obj,expected,desired)
@@ -223,6 +246,8 @@ static inline __int32 __msvc_xadd_i32(__int32 volatile * addr, __int32 val)
 { return _InterlockedExchangeAdd(addr, val); }
 static inline __int64 __msvc_xadd_i64(__int64 volatile * addr, __int64 val)
 { return _InterlockedExchangeAdd64(addr, val); }
+
+#define __msvc_xadd_ptr(ptr) __concat2(__msvc_xadd_,ptr)
 
 static inline char __c11_atomic_fetch_add__atomic_char(atomic_char *obj, char arg)
 { return (char)__msvc_xadd_i8((__int8 volatile *)obj, (__int8)arg); }
@@ -244,6 +269,8 @@ static inline ulong __c11_atomic_fetch_add__atomic_ulong(atomic_ulong *obj, ulon
 { return (ulong)__msvc_xadd_i32((__int32 volatile *)obj, (__int32)arg); }
 static inline ullong __c11_atomic_fetch_add__atomic_ullong(atomic_ullong *obj, ullong arg)
 { return (ullong)__msvc_xadd_i64((__int64 volatile *)obj, (__int64)arg); }
+static inline void* __c11_atomic_fetch_add__atomic_ptr(atomic_ptr *obj, void* arg)
+{ return (void*)__msvc_xadd_ptr(__ptr)((__intptr volatile *)obj, (__intptr)arg); }
 
 #define __c11_atomic_fetch_add(obj,arg)                    \
 _Generic((obj),                                            \
@@ -256,7 +283,8 @@ atomic_uint*: __c11_atomic_fetch_add__atomic_uint,         \
 atomic_long*: __c11_atomic_fetch_add__atomic_long,         \
 atomic_ulong*: __c11_atomic_fetch_add__atomic_ulong,       \
 atomic_llong*: __c11_atomic_fetch_add__atomic_llong,       \
-atomic_ullong*: __c11_atomic_fetch_add__atomic_ullong      \
+atomic_ullong*: __c11_atomic_fetch_add__atomic_ullong,     \
+atomic_ptr*: __c11_atomic_fetch_add__atomic_ptr            \
 )(obj,arg)
 
 #define atomic_fetch_add(obj,arg) __c11_atomic_fetch_add(obj,arg)
@@ -288,6 +316,8 @@ static inline ulong __c11_atomic_load__atomic_ulong(atomic_ulong *obj)
 { ulong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 static inline ullong __c11_atomic_load__atomic_ullong(atomic_ullong *obj)
 { ullong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
+static inline void* __c11_atomic_load__atomic_ptr(atomic_ptr *obj)
+{ void* val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 
 #define __c11_atomic_load(obj)                        \
 _Generic((obj),                                       \
@@ -300,7 +330,8 @@ atomic_uint*: __c11_atomic_load__atomic_uint,         \
 atomic_long*: __c11_atomic_load__atomic_long,         \
 atomic_ulong*: __c11_atomic_load__atomic_ulong,       \
 atomic_llong*: __c11_atomic_load__atomic_llong,       \
-atomic_ullong*: __c11_atomic_load__atomic_ullong      \
+atomic_ullong*: __c11_atomic_load__atomic_ullong,     \
+atomic_ptr*: __c11_atomic_load__atomic_ptr            \
 )(obj)
 
 #define atomic_load(obj) __c11_atomic_load(obj)
@@ -310,14 +341,20 @@ atomic_ullong*: __c11_atomic_load__atomic_ullong      \
  * atomic_fetch_{op} template for {and,or,xor} using atomic_compare_exchange
  */
 
-#define __concat2(x,y) x ## y
-#define __concat3(x,y,z) x ## y ## z
-#define __C11_ATOMIC_FETCH_OP_TEMPLATE(prefix,type,op) static inline type     \
-    __concat3(prefix,atomic_,type)(__concat2(atomic_,type) *obj, type arg) {  \
-    type oldval, newval;                                                      \
-    do { oldval = atomic_load(obj); newval = oldval op arg; }                 \
-    while (!atomic_compare_exchange_strong(obj, &oldval, newval));            \
-    return oldval;                                                            \
+#define __C11_ATOMIC_FETCH_OP_TEMPLATE(prefix,type,op) static inline type           \
+    __concat3(prefix,atomic_,type)(__concat2(atomic_,type) *obj, type arg) {        \
+    type oldval, newval;                                                            \
+    do { oldval = atomic_load(obj); newval = oldval op arg; }                       \
+    while (!atomic_compare_exchange_strong(obj, &oldval, newval));                  \
+    return oldval;                                                                  \
+}
+
+#define __C11_ATOMIC_FETCH_OP_POINTER_TEMPLATE(prefix,op) static inline void*       \
+    __concat2(prefix,atomic_ptr)(atomic_ptr *obj, void* arg) {                      \
+    ptrdiff_t oldval, newval;                                                       \
+    do { oldval = (ptrdiff_t)atomic_load(obj); newval = oldval op (ptrdiff_t)arg; } \
+    while (!atomic_compare_exchange_strong(obj, (void**)&oldval, (void*)newval));   \
+    return (void*)oldval;						            \
 }
 
 /*
@@ -334,6 +371,7 @@ __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ushort,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,uint,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ulong,&)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_and__,ullong,&)
+__C11_ATOMIC_FETCH_OP_POINTER_TEMPLATE(__c11_atomic_fetch_and__,&)
 
 #define __c11_atomic_fetch_and(obj,arg)                    \
 _Generic((obj),                                            \
@@ -346,7 +384,8 @@ atomic_uint*: __c11_atomic_fetch_and__atomic_uint,         \
 atomic_long*: __c11_atomic_fetch_and__atomic_long,         \
 atomic_ulong*: __c11_atomic_fetch_and__atomic_ulong,       \
 atomic_llong*: __c11_atomic_fetch_and__atomic_llong,       \
-atomic_ullong*: __c11_atomic_fetch_and__atomic_ullong      \
+atomic_ullong*: __c11_atomic_fetch_and__atomic_ullong,	   \
+atomic_ptr*: __c11_atomic_fetch_and__atomic_ptr            \
 )(obj,arg)
 
 #define atomic_fetch_and(obj,arg) __c11_atomic_fetch_and(obj,arg)
@@ -366,6 +405,7 @@ __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ushort,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,uint,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ulong,|)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_or__,ullong,|)
+__C11_ATOMIC_FETCH_OP_POINTER_TEMPLATE(__c11_atomic_fetch_or__,|)
 
 #define __c11_atomic_fetch_or(obj,arg)			   \
 _Generic((obj),                                            \
@@ -378,7 +418,8 @@ atomic_uint*: __c11_atomic_fetch_or__atomic_uint,          \
 atomic_long*: __c11_atomic_fetch_or__atomic_long,          \
 atomic_ulong*: __c11_atomic_fetch_or__atomic_ulong,	   \
 atomic_llong*: __c11_atomic_fetch_or__atomic_llong,        \
-atomic_ullong*: __c11_atomic_fetch_or__atomic_ullong       \
+atomic_ullong*: __c11_atomic_fetch_or__atomic_ullong,	   \
+atomic_ptr*: __c11_atomic_fetch_or__atomic_ptr             \
 )(obj,arg)
 
 #define atomic_fetch_or(obj,arg) __c11_atomic_fetch_or(obj,arg)
@@ -398,6 +439,7 @@ __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ushort,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,uint,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ulong,^)
 __C11_ATOMIC_FETCH_OP_TEMPLATE(__c11_atomic_fetch_xor__,ullong,^)
+__C11_ATOMIC_FETCH_OP_POINTER_TEMPLATE(__c11_atomic_fetch_xor__,^)
 
 #define __c11_atomic_fetch_xor(obj,arg)                    \
 _Generic((obj),                                            \
@@ -410,7 +452,8 @@ atomic_uint*: __c11_atomic_fetch_xor__atomic_uint,         \
 atomic_long*: __c11_atomic_fetch_xor__atomic_long,         \
 atomic_ulong*: __c11_atomic_fetch_xor__atomic_ulong,	   \
 atomic_llong*: __c11_atomic_fetch_xor__atomic_llong,       \
-atomic_ullong*: __c11_atomic_fetch_xor__atomic_ullong      \
+atomic_ullong*: __c11_atomic_fetch_xor__atomic_ullong,	   \
+atomic_ptr*: __c11_atomic_fetch_xor__atomic_ptr            \
 )(obj,arg)
 
 #define atomic_fetch_xor(obj,arg) __c11_atomic_fetch_xor(obj,arg)
@@ -466,6 +509,7 @@ static inline _Bool __c11_atomic_is_lock_free__atomic_ushort(atomic_ushort *obj)
 static inline _Bool __c11_atomic_is_lock_free__atomic_uint(atomic_uint *obj) { return 1; }
 static inline _Bool __c11_atomic_is_lock_free__atomic_ulong(atomic_ulong *obj) { return 1; }
 static inline _Bool __c11_atomic_is_lock_free__atomic_ullong(atomic_ullong *obj) { return 1; }
+static inline _Bool __c11_atomic_is_lock_free__atomic_ptr(atomic_ptr *obj) { return 1; }
 static inline _Bool __c11_atomic_is_lock_free__unhandled(void *obj) { return 0; }
 
 #define __c11_atomic_is_lock_free(obj)    		  \
@@ -480,6 +524,7 @@ atomic_long*: __c11_atomic_is_lock_free__atomic_long,     \
 atomic_ulong*: __c11_atomic_is_lock_free__atomic_ulong,   \
 atomic_llong*: __c11_atomic_is_lock_free__atomic_llong,   \
 atomic_ullong*: __c11_atomic_is_lock_free__atomic_ullong, \
+atomic_ptr*: __c11_atomic_is_lock_free__atomic_ptr,       \
 default: __c11_atomic_is_lock_free__unhandled             \
 )(obj)
 
