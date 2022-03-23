@@ -17,8 +17,7 @@ the heeader currently supports a subset of the atomic types.
 - `atomic_long`, `atomic_ulong`
 - `atomic_llong`, `atomic_ullong`
 
-the header currently uses strong ordering for all primitives
-and the memory order parameter for explicit ops is ignored.
+the header currently uses strong ordering for all primitives.
 
 - [x] `atomic_load`, `atomic_load_explicit`
 - [x] `atomic_store`, `atomic_store_explicit`
