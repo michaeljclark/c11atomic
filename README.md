@@ -78,6 +78,38 @@ using the memory system.
   - `latency_atomic_relaxed_barrier_cxx` - sender and receiver
     loop using relaxed memory ops and barriers
 
+### thread pool tests
+
+[mumule](https://github.com/michaeljclark/mumule) is a simple thread pool
+implementation using the C11 thread support library and C11 atomics.
+
+- `test_mumule` - minimal thread pool dispatcher using queue counters
+
+```
+mule_submit: queue-start
+mule_start: starting-threads
+mule_sync: quench-queue
+mule_thread-0: worker-started
+mule_thread-1: worker-started
+arg=(nil) thr_idx=1 item_idx=2
+arg=(nil) thr_idx=1 item_idx=3
+arg=(nil) thr_idx=1 item_idx=4
+arg=(nil) thr_idx=1 item_idx=5
+arg=(nil) thr_idx=1 item_idx=6
+arg=(nil) thr_idx=1 item_idx=7
+arg=(nil) thr_idx=1 item_idx=8
+mule_sync: queue-processing (t=1970-01-01T00:00:01.249553791Z)
+arg=(nil) thr_idx=0 item_idx=1
+mule_thread-0: queue-complete
+mule_sync: dispatcher-woke
+mule_sync: queue-complete
+mule_stop: stopping-threads
+mule_thread-1: queue-empty (t=1970-01-01T00:00:01.258748034Z)
+mule_thread-1: worker-exiting
+mule_thread-0: queue-empty (t=1970-01-01T00:00:01.258818636Z)
+mule_thread-0: worker-exiting
+```
+
 ### clock tests
 
 portable replacement for `clock_gettime` using platform specific clock
