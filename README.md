@@ -16,6 +16,7 @@ the heeader currently supports a subset of the atomic types.
 - `atomic_int`, `atomic_uint`
 - `atomic_long`, `atomic_ulong`
 - `atomic_llong`, `atomic_ullong`
+- `atomic_ptr` _(non-standard)_
 
 the header currently uses strong ordering for all primitives.
 
