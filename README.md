@@ -77,3 +77,39 @@ using the memory system.
     loop using acquire and release memory ops
   - `latency_atomic_relaxed_barrier_cxx` - sender and receiver
     loop using relaxed memory ops and barriers
+
+### clock tests
+
+portable replacement for `clock_gettime` using platform specific clock
+APIs on Windows, Linux, and macOS, plus x86 TSC using `rdtsc`, and a
+fallback to the lower resolution C Standard Library clock API.
+
+- `test_muclock` - clock busy loop overshoot, jitter and latency histogram
+
+```
+# test_meta
+clock    : clock-std        freq     : 1000000
+clock    : clock-posix      freq     : 1000000000
+clock    : clock-x86        freq     : 2600000000
+clk: clock-x86
+
+# test_busy
+wait_1ms :    2600034 cycles (elapsed 1000013.077 ns, overshoot   13.077 ns)
+
+# test_jitter
+dmin     :         48 cycles (  18.462 ns)
+dmax     :        122 cycles (  46.923 ns)
+drange   :         74 cycles (  28.462 ns)
+
+# histogram
+      48 (  18.462 ns)     82 ███████████▉
+      52 (  20.000 ns)    345 ██████████████████████████████████████████████████
+      54 (  20.769 ns)     41 █████▉
+      56 (  21.538 ns)    125 ██████████████████
+      58 (  22.308 ns)     82 ███████████▉
+      60 (  23.077 ns)    143 ████████████████████▋
+      62 (  23.846 ns)     41 █████▉
+      64 (  24.615 ns)    163 ███████████████████████▌
+      72 (  27.692 ns)      1 ▏
+     122 (  46.923 ns)      1 ▏
+```
