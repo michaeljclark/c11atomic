@@ -35,6 +35,21 @@ the header currently uses strong ordering for all primitives.
 - [x] `atomic_thread_fence`, `atomic_signal_fence`
 - [x] `atomic_is_lock_free`
 
+## limitations
+
+### custom pointer types
+
+custom pointer types are not supported due to limitations with `_Generic`
+dispatch as all types need to be specified in advance. GCC and Clang
+implement atomics using polymorphic compiler builtin functions so they are
+not exposed to the limitations of `_Generic` dispatch. as a work around
+`atomic_ptr` has been added which is a void* pointer type that can be used
+with casts to support atomic operations on pointers to custom types.
+
+```
+typedef void * _Atomic atomic_ptr;
+```
+
 ## tests
 
 ### integration tests
