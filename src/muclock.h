@@ -25,8 +25,8 @@ typedef struct muclock_definition
 
 void muclock_get_definitions(const muclock_definition **defs, size_t *nclocks);
 const muclock_definition* muclock_get_default();
-uint64_t muclock_get_time_ns(const muclock_definition *clk);
-void muclock_get_time_ts(const muclock_definition *clk, struct timespec *ts);
+uint64_t muclock_gettime_ns(const muclock_definition *clk);
+void muclock_gettime_ts(const muclock_definition *clk, struct timespec *ts);
 
 #ifdef __cplusplus
 }

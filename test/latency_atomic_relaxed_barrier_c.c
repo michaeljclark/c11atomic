@@ -37,7 +37,7 @@ static int sloop(void *arg)
 {
     report_cpuid_node_topology();
 
-    st[0] = muclock_get_time_ns(clk);
+    st[0] = muclock_gettime_ns(clk);
     for (size_t i = 0; i < iters; i++) {
 	uint y, x = atomic_load_explicit(&sctr, memory_order_relaxed);
 	do {
@@ -46,7 +46,7 @@ static int sloop(void *arg)
 	atomic_thread_fence(memory_order_seq_cst);
 	atomic_store_explicit(&sctr, x+1, memory_order_relaxed);
     }
-    st[1] = muclock_get_time_ns(clk);
+    st[1] = muclock_gettime_ns(clk);
 
     return 0;
 }
@@ -55,7 +55,7 @@ static int rloop(void *arg)
 {
     report_cpuid_node_topology();
 
-    rt[0] = muclock_get_time_ns(clk);
+    rt[0] = muclock_gettime_ns(clk);
     for (size_t i = 0; i < iters; i++) {
 	uint y, x = atomic_load_explicit(&rctr, memory_order_relaxed);
 	do {
@@ -64,7 +64,7 @@ static int rloop(void *arg)
 	atomic_thread_fence(memory_order_seq_cst);
 	atomic_store_explicit(&rctr, y, memory_order_relaxed);
     }
-    rt[1] = muclock_get_time_ns(clk);
+    rt[1] = muclock_gettime_ns(clk);
 
     return 0;
 }

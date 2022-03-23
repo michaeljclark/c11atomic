@@ -269,15 +269,15 @@ const muclock_definition* muclock_get_default()
     return chosen_clock;
 }
 
-uint64_t muclock_get_time_ns(const muclock_definition *clk)
+uint64_t muclock_gettime_ns(const muclock_definition *clk)
 {
     muclock_type f = clk->freq(), t = clk->time();
     return t * 1000000000ull / f; /* this could overflow */
 }
 
-void muclock_get_time_ts(const muclock_definition *clk, struct timespec *ts)
+void muclock_gettime_ts(const muclock_definition *clk, struct timespec *ts)
 {
-    uint64_t ns = muclock_get_time_ns(clk);
+    uint64_t ns = muclock_gettime_ns(clk);
     ts->tv_sec = ns / 1000000000ull;
     ts->tv_nsec = ns % 1000000000ull;
 }

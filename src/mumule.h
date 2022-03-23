@@ -158,9 +158,13 @@ static int mule_thread(void *arg)
 
     for (;;) {
         struct timespec abstime = { 0 };
-	// fixme: muclock is relative so incorrect epoch for cnd_timewait
-        // assert(!clock_gettime(CLOCK_REALTIME, &abstime));
-	muclock_get_time_ts(clk, &abstime);
+	    /* fixme: muclock x86 TSC clock is relative so we have an incorrect epoch
+         *        for cnd_timewait essentially meaning we might miss wakeups */
+#if USE_CLOCK_GETTIME
+        assert(!clock_gettime(CLOCK_REALTIME, &abstime));
+#else
+	    muclock_gettime_ts(clk, &abstime);
+#endif
         abstime = _timespec_add(abstime, mumule_revalidate_work_available_ns);
 
         /* find out how many items still need processing */
@@ -276,9 +280,13 @@ static int mule_sync(mu_mule *mule)
     mtx_lock(&mule->mutex);
     for (;;) {
         struct timespec abstime = { 0 };
-	// fixme: muclock is relative so incorrect epoch for cnd_timewait
-        // assert(!clock_gettime(CLOCK_REALTIME, &abstime));
-	muclock_get_time_ts(clk, &abstime);
+        /* fixme: muclock x86 TSC clock is relative so we have an incorrect epoch
+         *        for cnd_timewait essentially meaning we might miss wakeups */
+#if USE_CLOCK_GETTIME
+        assert(!clock_gettime(CLOCK_REALTIME, &abstime));
+#else
+        muclock_gettime_ts(clk, &abstime);
+#endif
         abstime = _timespec_add(abstime, mumule_revalidate_queue_complete_ns);
 
         queued = atomic_load_explicit(&mule->queued, __ATOMIC_ACQUIRE);
