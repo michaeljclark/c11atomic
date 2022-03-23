@@ -195,6 +195,10 @@ target_link_libraries(latency_atomic_acquire_release_cxx ${EXTRA_LIBS})
 add_executable(test_muclock test/test_muclock.cc)
 target_link_libraries(test_muclock muclock)
 
+# test mucpu (cpu topology)
+add_executable(test_mucpu test/test_mucpu.c)
+target_link_libraries(test_mucpu)
+
 # test mumule (multithreaded worker pool)
 add_executable(test_mumule test/test_mumule.c)
 target_link_libraries(test_mumule muclock ${EXTRA_LIBS})

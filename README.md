@@ -113,3 +113,14 @@ drange   :         74 cycles (  28.462 ns)
       72 (  27.692 ns)      1 ▏
      122 (  46.923 ns)      1 ▏
 ```
+
+### cpuid tests
+
+interface to x86 `cpuid` on Windows, Linux, and macOS to query processor
+topology (cpuid leaf _0x1f_ or _0x0b_) and report SMT thread placement.
+
+- `test_mucpu` - reports x86 processor model name, apic_id, core_id and smt_id
+
+```
+Intel(R) Core(TM) i9-7980XE CPU @ 2.60GHz (apic_id:17 core_id:8 smt_id:1)
+```
