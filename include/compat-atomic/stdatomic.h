@@ -296,46 +296,49 @@ atomic_ptr*: __c11_atomic_fetch_add__atomic_ptr            \
  * atomic_load
  */
 
-static inline char __c11_atomic_load__atomic_char(atomic_char *obj)
+static inline char __c11_atomic_load__atomic_char(const atomic_char *obj)
 { char val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline short __c11_atomic_load__atomic_short(atomic_short *obj)
+static inline short __c11_atomic_load__atomic_short(const atomic_short *obj)
 { short val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline int __c11_atomic_load__atomic_int(atomic_int *obj)
+static inline int __c11_atomic_load__atomic_int(const atomic_int *obj)
 { int val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline long __c11_atomic_load__atomic_long(atomic_long *obj)
+static inline long __c11_atomic_load__atomic_long(const atomic_long *obj)
 { long val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline llong __c11_atomic_load__atomic_llong(atomic_llong *obj)
+static inline llong __c11_atomic_load__atomic_llong(const atomic_llong *obj)
 { llong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline uchar __c11_atomic_load__atomic_uchar(atomic_uchar *obj)
+static inline uchar __c11_atomic_load__atomic_uchar(const atomic_uchar *obj)
 { uchar val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline ushort __c11_atomic_load__atomic_ushort(atomic_ushort *obj)
+static inline ushort __c11_atomic_load__atomic_ushort(const atomic_ushort *obj)
 { ushort val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline uint __c11_atomic_load__atomic_uint(atomic_uint *obj)
+static inline uint __c11_atomic_load__atomic_uint(const atomic_uint *obj)
 { uint val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline ulong __c11_atomic_load__atomic_ulong(atomic_ulong *obj)
+static inline ulong __c11_atomic_load__atomic_ulong(const atomic_ulong *obj)
 { ulong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline ullong __c11_atomic_load__atomic_ullong(atomic_ullong *obj)
+static inline ullong __c11_atomic_load__atomic_ullong(const atomic_ullong *obj)
 { ullong val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
-static inline void* __c11_atomic_load__atomic_ptr(atomic_ptr *obj)
+static inline void* __c11_atomic_load__atomic_ptr(const atomic_ptr *obj)
 { void* val; _ReadBarrier(); val = *obj; _ReadWriteBarrier(); return val; }
 
-#define __c11_atomic_load(obj)                        \
-_Generic((obj),                                       \
-atomic_char*: __c11_atomic_load__atomic_char,         \
-atomic_uchar*: __c11_atomic_load__atomic_uchar,       \
-atomic_short*: __c11_atomic_load__atomic_short,       \
-atomic_ushort*: __c11_atomic_load__atomic_ushort,     \
-atomic_int*: __c11_atomic_load__atomic_int,           \
-atomic_uint*: __c11_atomic_load__atomic_uint,         \
-atomic_long*: __c11_atomic_load__atomic_long,         \
-atomic_ulong*: __c11_atomic_load__atomic_ulong,       \
-atomic_llong*: __c11_atomic_load__atomic_llong,       \
-atomic_ullong*: __c11_atomic_load__atomic_ullong,     \
-atomic_ptr*: __c11_atomic_load__atomic_ptr            \
-)(obj)
+#define __atomic_load(type)             \
+    type * : __c11_atomic_load__##type, \
+    const type * : __c11_atomic_load__##type
+
+#define __c11_atomic_load(obj)             \
+    _Generic((obj),                        \
+             __atomic_load(atomic_char),   \
+             __atomic_load(atomic_uchar),  \
+             __atomic_load(atomic_short),  \
+             __atomic_load(atomic_ushort), \
+             __atomic_load(atomic_int),    \
+             __atomic_load(atomic_uint),   \
+             __atomic_load(atomic_long),   \
+             __atomic_load(atomic_ulong),  \
+             __atomic_load(atomic_llong),  \
+             __atomic_load(atomic_ullong), \
+             __atomic_load(atomic_ptr))(obj)
 
 #define atomic_load(obj) __c11_atomic_load(obj)
-#define atomic_load_explicit(obj,mo) __c11_atomic_load(obj)
+#define atomic_load_explicit(obj, mo) __c11_atomic_load(obj)
 
 /*
  * atomic_fetch_{op} template for {and,or,xor} using atomic_compare_exchange
